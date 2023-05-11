@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>今、NFT を持っている？</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@metamask/onboarding@1.0.1/dist/metamask-onboarding.bundle.js"
+        integrity="sha256-h3dgmf64rSDcgcbf8ad1nc/uH0EKdy5QH7P7n/91f7s=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"
+        integrity="sha256-jNzSqmjGhIDVGAygzWTxkMcGT97P9ZbqNAQuul/xgds=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha256-wLz3iY/cO4e6vKZ4zRmo4+9XDpMcgKOvv/zEU3OMlRo=" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand">Hello NFT</span>
+            <div class="d-flex">
+                <button id="connect" class="btn btn-outline-success">MetaMask に接続</button>
+                <button id="disconnect" class="btn btn-outline-danger" style="display: none;">MetaMask を切断</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5" style="max-width: 840px;">
+        <h1 class="text-center">今、NFT を持っている？</h1>
+
+        <h2 class="h4 mt-5">1. 右上の [MetaMask に接続] をクリック</h2>
+
+        <table class="table mt-3">
+            <tbody>
+                <tr>
+                    <th scope="row">接続しているネットワーク</th>
+                    <td id="network" class="font-monospace"></td>
+                </tr>
+                <tr>
+                    <th scope="row">あなたのアドレス</th>
+                    <td id="account" class="font-monospace text-break"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="h4 mt-5">2. 調べたい NFT のスマート コントラクト アドレスを入力して [チェック] をクリック</h2>
+
+        <div class="input-group mt-3">
+            <input id="contractAddress" type="text" class="form-control font-monospace"
+                placeholder="NFT コントラクトのアドレス 0x...." maxlength="42">
+            <button id="query" class="btn btn-primary">チェック</button>
+        </div>
+
+        <h2 class="h4 mt-5">3. 持っている NFT は...？</h2>
+
+        <div id="info" class="alert alert-info mt-3" style="display: none;">
+            アドレス <code><span id="queriedAddress" class="text-break"></span></code> は、
+            スマート コントラクト <code><span id="queriedNft" class="text-break"></span></code> が実装する NFT を、
+            <span id="nftCount"></span> 個保有しています。
+        </div>
+
+        <div id="error" class="alert alert-danger mt-3" style="display: none;">
+            NFT コントラクトの呼び出し中にエラーが発生しました。
+            コントラクトのアドレスが間違っているか、
+            ERC-721 の <code>balanceOf</code> メソッド (必須) を実装していないかもしれません。<br>
+            (エラー メッセージ: <span id="errorMessage"></span>)
+        </div>
+
+        <div id="tokens"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha256-lSABj6XYH05NydBq+1dvkMu6uiCc/MbLYOFGRkf3iQs=" crossorigin="anonymous"></script>
+    <script src="nft.js"></script>
+</body>
+
+</html>

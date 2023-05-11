@@ -1,3 +1,10 @@
+import MetaMaskOnboarding from "@metamask/onboarding";
+import Web3 from "web3";
+
+// TypeChain が生成したコントラクトの型情報を読み込む。
+import { Hello } from "./types/Hello";
+
+// @ts-ignore
 const ethereum = window.ethereum;
 
 let onboarding;
@@ -135,7 +142,7 @@ async function queryOnClick() {
     const contractAddress = `${$("#contractAddress").val()}`.trim();
     $("#queriedNft").text(contractAddress);
 
-    let nftContractInstance;
+    let nftContractInstance: Hello;
     let numTokens;
     try {
         nftContractInstance = new web3.eth.Contract(abi, contractAddress);

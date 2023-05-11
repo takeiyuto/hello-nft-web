@@ -2,7 +2,13 @@
 
 ブラウザ拡張のソフトウェア ウォレット MetaMask と接続する機能を持ち、任意の NFT コントラクト アドレスに対してウォレットのアドレスが保有しているトークンを問い合わせることができるフロントエンドです。
 
+## このブランチについて
+
+この `upgradable` ブランチのコードは、アップグレード可能な NFT コントラクトに特化しています。
+
 ## 動作方法
+
+前提条件として、[Upgradable NFT](https://github.com/takeiyuto/upgradable-nft) レポジトリのコントラクトのデプロイがすでに終わっているものとします。
 
 1. 適切なディレクトリでこのレポジトリをクローンし、ライブラリをダウンロードします。
 ```bash
@@ -35,4 +41,4 @@ npm install -g yarn
 
 # 参照
 
-[徹底解説 NFTの理論と実践](https://www.ohmsha.co.jp/book/9784274230608/)の第4章を参照してください。[本書の Web サイト](https://takeiyuto.github.io/nft-book)も参考にしてください。
+[徹底解説 NFTの理論と実践](https://www.ohmsha.co.jp/book/9784274230608/)の第5章3節を参照してください。[本書の Web サイト](https://takeiyuto.github.io/nft-book)も参考にしてください。

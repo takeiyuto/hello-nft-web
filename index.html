@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>今、NFT を持っている？</title>
+    <title>アップグレード可能なコントラクト</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@metamask/onboarding@1.0.1/dist/metamask-onboarding.bundle.js"
         integrity="sha256-h3dgmf64rSDcgcbf8ad1nc/uH0EKdy5QH7P7n/91f7s=" crossorigin="anonymous"></script>
@@ -19,7 +19,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <span class="navbar-brand">Hello NFT</span>
+            <span class="navbar-brand">Upgradable NFT</span>
             <div class="d-flex">
                 <button id="connect" class="btn btn-outline-success">MetaMask に接続</button>
                 <button id="disconnect" class="btn btn-outline-danger" style="display: none;">MetaMask を切断</button>
@@ -29,6 +29,14 @@
 
     <div class="container py-5" style="max-width: 840px;">
         <h1 class="text-center">今、NFT を持っている？</h1>
+
+        <div class="d-flex justify-content-center">
+            <div class="form-floating" style="width:450px;">
+                <input id="contractAddress" type="text" class="form-control font-monospace" placeholder="0x"
+                    pattern="(0x)?[0-9a-fA-F]{40}" maxlength="42" required>
+                <label for="contractAddress">コントラクト アドレス</label>
+            </div>
+        </div>
 
         <h2 class="h4 mt-5">1. 右上の [MetaMask に接続] をクリック</h2>
 
@@ -42,29 +50,44 @@
                     <th scope="row">あなたのアドレス</th>
                     <td id="account" class="font-monospace text-break"></td>
                 </tr>
+                <tr>
+                    <th scope="row">コントラクトのバージョン</th>
+                    <td id="contractVersion" class="font-monospace text-break"></td>
+                </tr>
             </tbody>
         </table>
 
-        <h2 class="h4 mt-5">2. 調べたい NFT のスマート コントラクト アドレスを入力して [チェック] をクリック</h2>
+        <h2 class="h4 mt-5">2. コントラクトに Ether を送付してトークンを入手する</h2>
 
-        <div class="input-group mt-3">
-            <input id="contractAddress" type="text" class="form-control font-monospace"
-                placeholder="NFT コントラクトのアドレス 0x...." maxlength="42">
-            <button id="query" class="btn btn-primary">チェック</button>
+        <form class="row mt-3">
+            <div class="col">
+                <div class="input-group">
+                    <input id="amount" type="number" class="form-control text-end" value="0" step="0.001" required>
+                    <span class="input-group-text">ETH</span>
+                </div>
+            </div>
+            <div class="col d-flex align-items-center">
+                を
+                <button class="btn btn-primary mx-2" type="submit">送付する</button>
+            </div>
+        </form>
+
+        <div id="sendError" class="alert alert-danger mt-3" style="display: none;">
+            NFT コントラクトの呼び出し中にエラーが発生しました。<br>
+            (エラー メッセージ: <span id="sendErrorMessage"></span>)
         </div>
 
         <h2 class="h4 mt-5">3. 持っている NFT は...？</h2>
 
         <div id="info" class="alert alert-info mt-3" style="display: none;">
             アドレス <code><span id="queriedAddress" class="text-break"></span></code> は、
-            スマート コントラクト <code><span id="queriedNft" class="text-break"></span></code> が実装する NFT を、
+            NFT を
             <span id="nftCount"></span> 個保有しています。
         </div>
 
         <div id="error" class="alert alert-danger mt-3" style="display: none;">
             NFT コントラクトの呼び出し中にエラーが発生しました。
-            コントラクトのアドレスが間違っているか、
-            ERC-721 の <code>balanceOf</code> メソッド (必須) を実装していないかもしれません。<br>
+            <br>
             (エラー メッセージ: <span id="errorMessage"></span>)
         </div>
 

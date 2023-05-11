@@ -50,6 +50,19 @@ const abi = [
         "stateMutability": "view",
         "type": "function"
     },
+    {
+        "inputs": [],
+        "name": "version",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
 ];
 
 // ページのロード完了時に、MetaMask の接続のための onboarding インスタンスを初期化し、UI をリセットする。
@@ -57,7 +70,8 @@ $(() => { onload(); updateButton(); });
 // [MetaMask に接続] ボタンが押されたら、未インストールの状況ではインストールするように誘導し、既にインストールされていれば、ウォレットへの接続許可を求めます。
 $("#connect").on("click", async () => { await connectWallet(); updateButton(); });
 $("#disconnect").on("click", () => { disconnectWallet(); updateButton(); });
-$("#query").on("click", queryOnClick);
+$("#contractAddress").on("change", () => { loadContractInfo(); });
+$("form").submit(async (e) => { e.preventDefault(); await purchaseToken(); });
 
 // 画面 UI を、状況に応じて適切に設定します。
 function updateButton() {
@@ -70,6 +84,8 @@ function updateButton() {
         $("#account").text(account);
 
         $("#query").prop('disabled', false);
+
+        $("#contractAddress")[0].reportValidity();
     } else {
         // ウォレットが接続されていない状況。
         $("#connect").show();
@@ -109,7 +125,10 @@ async function connectWallet() {
         web3 = new Web3(ethereum);
         const accounts = await web3.eth.requestAccounts();
         chainId = await web3.eth.getChainId();
+        web3.eth.subscribe("newBlockHeaders", loadContractInfo);
         changeAccounts(accounts);
+
+        loadContractInfo();
     } catch {
         // 接続がキャンセルされた状態。
         disconnectWallet();
@@ -131,14 +150,18 @@ function disconnectWallet() {
     account = null;
 }
 
-async function queryOnClick() {
+async function loadContractInfo() {
+    if (!web3 || !$("#contractAddress")[0].checkValidity()) {
+        return;
+    }
     const contractAddress = `${$("#contractAddress").val()}`.trim();
-    $("#queriedNft").text(contractAddress);
 
     let nftContractInstance;
     let numTokens;
     try {
         nftContractInstance = new web3.eth.Contract(abi, contractAddress);
+        const version = await nftContractInstance.methods.version().call();
+        $("#contractVersion").text(version);
 
         numTokens = parseInt(await nftContractInstance.methods.balanceOf(account).call());
         $("#nftCount").text(numTokens);
@@ -166,4 +189,24 @@ async function queryOnClick() {
         }
         $("#tokens").empty().append(tokensDiv);
     } catch { }
+}
+
+async function purchaseToken() {
+    // コントラクト アドレスの入力を検証し、正しい形式であれば値を取得する。
+    if (!$("#contractAddress")[0].reportValidity()) {
+        return;
+    }
+    const address = `${$("#contractAddress").val()}`.trim();
+
+    // フォームに入力された 0.001 刻みの ETH 数量を wei 単位に変換する。
+    const amount = Math.round($("#amount").val() * 1000);
+    const amountWei = web3.utils.toWei(`${amount}`, "milli");
+
+    try {
+        await web3.eth.sendTransaction({ from: account, to: address, value: amountWei });
+        $("#sendError").hide();
+    } catch (e) {
+        $("#sendError").show();
+        $("#sendErrorMessage").text(e.message);
+    }
 }
